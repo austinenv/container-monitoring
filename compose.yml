@@ -20,3 +20,7 @@ services:
     ports:
       - 9090:9090
     restart: unless-stopped
+
+volumes:
+  prometheus-storage:
+    driver: local
