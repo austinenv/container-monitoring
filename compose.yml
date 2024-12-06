@@ -3,6 +3,8 @@ services:
   cadvisor:
     image: gcr.io/cadvisor/cadvisor:latest
     container_name: cadvisor-container
+    networks:
+      - monitoring-network
     ports:
       - 8080:8080
     volumes:
@@ -17,6 +19,8 @@ services:
     volumes:
       - ./prometheus.yml:/etc/prometheus/prometheus.yml
       - prometheus-storage:/prometheus
+    networks:
+      - monitoring-network
     ports:
       - 9090:9090
     restart: unless-stopped
@@ -29,6 +33,8 @@ services:
       - GF_RENDERING_SERVER_URL=http://renderer:8081/render
       - GF_RENDERING_CALLBACK_URL=http://grafana:3000/
       - GF_LOG_FILTERS=rendering:debug
+    networks:
+      - monitoring-network
     ports:
      - '3000:3000'
     volumes:
@@ -38,12 +44,17 @@ services:
     image: grafana/grafana-image-renderer:latest
     container_name: grafana-image-renderer-container
     restart: unless-stopped
+    networks:
+      - monitoring-network
     ports:
       - '8081:8081'
+
+networks:
+  monitoring-network:
+    driver: bridge
 
 volumes:
   prometheus-storage:
     driver: local
   grafana-storage:
     driver: local
-
